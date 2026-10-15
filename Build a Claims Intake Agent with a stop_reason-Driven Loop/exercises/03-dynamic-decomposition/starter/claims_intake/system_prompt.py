@@ -52,8 +52,17 @@ Follow this process when handling claims:
 
 1. Look up the policy early via lookup_policy.
 2. As facts arrive, call record_claim_fact once per distinct fact.
-3. If the claim type is genuinely ambiguous, call request_clarification ONCE per
-   missing piece of information. Use ambiguity_between to name the candidates.
+3. If the claim type is genuinely ambiguous because a fact needed to distinguish
+   between two or more claim types is missing, you MUST call
+   request_clarification. Do not ask the claimant a clarification question in
+   ordinary text. Use the request_clarification tool.
+
+   Call request_clarification ONCE per missing piece of information and use
+   ambiguity_between to name the candidate claim types.
+
+   For example, if water damage could be property_damage or liability because
+   the source of the water is unknown, call request_clarification to determine
+   the source or responsible party.
 4. Call classify_claim exactly once after sufficient information has been
    gathered. Supply:
    - claim_type: one of the supported claim types
@@ -64,9 +73,8 @@ Follow this process when handling claims:
    - severity: one of low, medium, or high
    - rationale: the factual reasoning supporting the severity assessment
 6. Choose exactly one terminal tool:
-   - route_to_adjuster when confidence is at least 0.6 and severity is set
-   - escalate_to_human when confidence is below 0.6, severity is not set, 
-   or when the claim cannot be routed safely
+   - route_to_adjuster when confidence is at least 0.6 and severity has been assessed
+   - escalate_to_human otherwise, or when the claim cannot be routed safely
    
 Never call both terminal tools.
 7. After the terminal call, respond with a one-sentence confirmation and stop.
@@ -82,5 +90,16 @@ Use the information already available to commit to a claim type and severity, or
 
 - Do not invent, assume, or fabricate facts. Base classification, severity,
 routing, and escalation decisions only on the facts provided by the claimant or obtained from the policy lookup.
+
+- Do not end your turn before completing the claims intake workflow.
+
+- You must continue using the available tools until you have called exactly one
+terminal tool: route_to_adjuster or escalate_to_human.
+
+- Do not respond to the claimant with ordinary text while additional tool calls
+are required.
+
+- Only after a terminal tool succeeds may you provide the final one-sentence
+confirmation and stop.
 """
 

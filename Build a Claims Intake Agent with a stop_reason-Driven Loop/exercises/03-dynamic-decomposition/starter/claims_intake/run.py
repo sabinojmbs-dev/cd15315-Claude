@@ -199,10 +199,7 @@ def _load_fixtures(arg_fixture: str | None) -> list[Path]:
 def _make_run_dir() -> Path:
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_dir = RUNS_ROOT / stamp
-
-    (run_dir / "traces").mkdir(parents=True, exist_ok=True)
-    (run_dir / "queues").mkdir(parents=True, exist_ok=True)
-
+    run_dir.mkdir(parents=True, exist_ok=True)
     return run_dir
 
 

@@ -344,7 +344,7 @@ def _t_route_to_adjuster(session: ClaimSession, inp: dict[str, Any]) -> str:
         return _err(
             "permanent",
             False,
-            "A terminal tool has already been called for this claim.",
+            "A terminal tool was already called for this claim.",
         )
 
     queue = inp.get("queue")
@@ -368,14 +368,14 @@ def _t_route_to_adjuster(session: ClaimSession, inp: dict[str, Any]) -> str:
         return _err(
             "permanent",
             False,
-            "The claim must be classified before routing.",
+            "classify_claim must be called before routing.",
         )
 
     if session.severity is None:
         return _err(
             "permanent",
             False,
-            "Severity must be assessed before routing.",
+            "assess_severity must be called before routing.",
         )
 
     routing_record = {
@@ -404,7 +404,7 @@ def _t_escalate_to_human(session: ClaimSession, inp: dict[str, Any]) -> str:
         return _err(
             "permanent",
             False,
-            "A terminal tool has already been called for this claim.",
+            "A terminal tool was already called for this claim.",
         )
 
     reason = inp.get("reason")
