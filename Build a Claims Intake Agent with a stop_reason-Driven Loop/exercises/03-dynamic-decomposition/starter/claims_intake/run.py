@@ -56,16 +56,14 @@ def _run_one(
         policy_id=fixture["policy_id"],
         run_dir=run_dir,
         policies=policies,
-        # TODO: Wire the fixture's scripted clarification responses into the
-        # session so request_clarification can return them. The fixture stores them under
-        # the "clarification_responses" key (a dict of question-substring -> reply).
-        clarification_responses={},
+        clarification_responses=fixture.get("clarification_responses", {}),
     )
     executor = make_executor(session)
     budget = Budget(
         max_input_tokens=max_input_tokens,
         max_wall_clock_s=max_wall_clock_s,
     )
+
     trace_path = run_dir / "traces" / f"{fixture['claim_id']}.jsonl"
     t0 = time.monotonic()
     state: FinalState | None = None
@@ -201,7 +199,10 @@ def _load_fixtures(arg_fixture: str | None) -> list[Path]:
 def _make_run_dir() -> Path:
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_dir = RUNS_ROOT / stamp
-    run_dir.mkdir(parents=True, exist_ok=True)
+
+    (run_dir / "traces").mkdir(parents=True, exist_ok=True)
+    (run_dir / "queues").mkdir(parents=True, exist_ok=True)
+
     return run_dir
 
 
